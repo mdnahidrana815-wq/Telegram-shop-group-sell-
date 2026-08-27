@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Telegram Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F1320; --bg-2:#0B0E18; --surface:#171C2C; --surface-2:#1F2638; --border:#2A3147;
+  --text:#EDEFF5; --text-dim:#9AA3B8; --text-faint:#67708A;
+  --gold:#F2C230; --gold-dark:#C9960B;
+  --tg-blue:#FF0505; --tg-blue-dark:#FF0505;
+  --bkash-pink:#E2136E; --nagad-orange:#F26A24;
+  --success:#2ECC71; --success-dim:#1C7A45;
+  --pending:#F2C230; --progress:#3D9BE9; --danger:#E5484D;
+  --radius:18px; --radius-sm:10px;
+  --shadow:0 12px 32px -8px rgba(0,0,0,.55);
+  --font-display:'Baloo Da 2',sans-serif;
+  --font-body:'Hind Siliguri','Inter',sans-serif;
+  --font-data:'Inter',sans-serif;
+}
+/* LIGHT THEME */
+[data-theme="light"]{
+  --bg:#F0F2F8; --bg-2:#E4E8F2; --surface:#FFFFFF; --surface-2:#EDF0F8; --border:#D0D6E8;
+  --text:#1A1F35; --text-dim:#4A5270; --text-faint:#8890AA;
+  --shadow:0 12px 32px -8px rgba(0,0,0,.12);
+}
+[data-theme="light"] body{
+  background:radial-gradient(circle at 20% -10%, #dce3f5 0%, #F0F2F8 45%) fixed;
+}
+[data-theme="light"] .topbar{background:rgba(240,242,248,.94);}
+[data-theme="light"] .bottom-nav{background:rgba(240,242,248,.96);}
+[data-theme="light"] .dot-menu{background:var(--surface);box-shadow:0 8px 30px rgba(0,0,0,.12);}
+[data-theme="light"] .auth-scrim{background:radial-gradient(circle at 30% -10%, #c8d4f0 0%, #E4E8F2 55%);}
+[data-theme="light"] .modal{background:var(--surface);}
+[data-theme="light"] .modal-head{background:var(--surface);}
+[data-theme="light"] .drawer{background:var(--bg-2);}
+[data-theme="light"] .auth-form-box{background:var(--surface);box-shadow:0 20px 50px rgba(0,0,0,.1);}
+[data-theme="light"] .field input{background:var(--surface-2);border-color:var(--border);color:var(--text);}
+[data-theme="light"] .pass{background:var(--surface);}
+[data-theme="light"] .tg-card{background:linear-gradient(165deg,rgba(42,171,238,.06),var(--surface) 45%);}
+[data-theme="light"] .order-row{background:var(--surface);}
+[data-theme="light"] .icon-btn{background:var(--surface);}
+[data-theme="light"] .dot-menu-btn{background:var(--surface);}
+[data-theme="light"] .brand-icon{box-shadow:0 4px 14px -2px rgba(255,5,5,.3);}
+
+/* THEME TOGGLE BUTTON */
+.theme-toggle{width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:.15s;font-size:18px;cursor:pointer;}
+.theme-toggle:active{transform:scale(.94);}
+
+*{box-sizing:border-box;} html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at 20% -10%, #1a2236 0%, var(--bg) 45%) fixed;
+  color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased;
+  min-height:100vh; padding-bottom:70px;
+  transition:background .3s, color .2s;
+}
+a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+img{max-width:100%;display:block;}
+::selection{background:var(--gold);color:#1a1303;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px;}
+.hidden{display:none!important;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(11,14,24,.96);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);}
+.bottom-nav-inner{max-width:560px;margin:0 auto;display:flex;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 8px;color:var(--text-faint);transition:.15s;}
+.nav-btn svg{width:22px;height:22px;stroke:var(--text-faint);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:.15s;}
+.nav-btn span{font-size:11px;font-family:var(--font-data);font-weight:600;}
+.nav-btn.active{color:var(--tg-blue);}
+.nav-btn.active svg{stroke:var(--tg-blue);fill:rgba(42,171,238,.12);}
+.nav-btn:active{transform:scale(.94);}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.gallery-item{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--border);cursor:pointer;}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:.3s;}
+.gallery-item:active img{transform:scale(1.05);}
+.gallery-cap{position:absolute;left:0;right:0;bottom:0;padding:8px 10px;background:linear-gradient(to top,rgba(8,10,16,.85),transparent);font-size:11.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* SITE INTRO (auth header) */
+.auth-intro{font-size:12.5px;color:var(--text-dim);line-height:1.6;padding:0 4px;margin-top:8px;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(11,14,24,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.topbar-inner{max-width:560px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(145deg,#2AABEE,#1a80bb);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px -2px rgba(42,171,238,.45);}
+.brand-icon svg{width:22px;height:22px;fill:#fff;}
+.brand-name{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:.2px;line-height:1.1;}
+.brand-tag{display:block;font-size:10px;color:var(--tg-blue);font-family:var(--font-data);letter-spacing:.8px;font-weight:600;text-transform:uppercase;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;transition:.15s;}
+.icon-btn:active{transform:scale(.94);}
+.icon-btn svg{width:19px;height:19px;stroke:var(--text-dim);fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.order-dot{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:50%;background:var(--tg-blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:var(--font-data);border:2px solid var(--bg-2);padding:0 3px;}
+
+/* 3-DOT MENU */
+.dot-menu-wrap{position:relative;}
+.dot-menu-btn{width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3.5px;transition:.15s;}
+.dot-menu-btn:active{transform:scale(.94);}
+.dot-menu-btn span{width:4px;height:4px;border-radius:50%;background:var(--text-dim);display:block;}
+.dot-menu{position:absolute;top:48px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;min-width:180px;box-shadow:var(--shadow);z-index:100;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-8px) scale(.97);transition:.18s cubic-bezier(.16,1,.3,1);}
+.dot-menu.show{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);}
+.dot-menu-item{display:flex;align-items:center;gap:10px;padding:13px 16px;font-size:13.5px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:.12s;}
+.dot-menu-item:hover{background:var(--surface-2);color:var(--text);}
+.dot-menu-item .dm-icon{font-size:17px;width:22px;text-align:center;}
+.dot-menu-divider{height:1px;background:var(--border);margin:2px 0;}
+.dot-menu-user{padding:12px 16px;border-bottom:1px solid var(--border);}
+.dot-menu-user .du-name{font-size:13px;font-weight:700;color:var(--text);}
+.dot-menu-user .du-email{font-size:11px;color:var(--text-faint);font-family:var(--font-data);margin-top:2px;}
+
+/* AUTH MODAL - Full page beautiful */
+.auth-scrim{position:fixed;inset:0;background:radial-gradient(circle at 30% -10%, #1a2a40 0%, #0B0E18 55%);z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .25s;}
+.auth-scrim.show{opacity:1;pointer-events:auto;}
+.auth-card{background:transparent;width:100%;max-width:420px;overflow:hidden;padding:0 0 40px;}
+.auth-site-hero{padding:36px 24px 28px;text-align:center;position:relative;}
+.auth-site-hero::after{content:'';position:absolute;bottom:0;left:24px;right:24px;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
+.auth-site-logo{width:72px;height:72px;border-radius:22px;background:linear-gradient(145deg,#FF4444,#CC0000);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 12px 32px -6px rgba(255,5,5,.5);position:relative;}
+.auth-site-logo::after{content:'';position:absolute;inset:-4px;border-radius:26px;border:2px solid rgba(255,68,68,.2);}
+.auth-site-logo svg{width:36px;height:36px;fill:#fff;}
+.auth-site-name{font-family:var(--font-display);font-size:26px;font-weight:800;margin:0 0 4px;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.auth-site-tagline{font-size:12px;color:var(--tg-blue);font-family:var(--font-data);letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-bottom:16px;}
+.auth-site-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.auth-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--font-data);}
+.auth-badge.bkash{background:rgba(226,19,110,.12);color:#E2136E;border:1px solid rgba(226,19,110,.25);}
+.auth-badge.nagad{background:rgba(242,106,36,.12);color:#F26A24;border:1px solid rgba(242,106,36,.25);}
+.auth-badge.secure{background:rgba(46,204,113,.1);color:#2ECC71;border:1px solid rgba(46,204,113,.2);}
+.auth-site-desc{font-size:13px;color:var(--text-dim);line-height:1.65;padding:0 8px;}
+.auth-form-box{margin:24px 20px 0;background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 20px 50px -10px rgba(0,0,0,.6);}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);}
+.auth-tab{flex:1;padding:15px;font-family:var(--font-data);font-weight:700;font-size:13.5px;color:var(--text-faint);border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.15s;text-align:center;}
+.auth-tab.active{color:var(--tg-blue);border-color:var(--tg-blue);}
+.auth-body{padding:22px 22px 26px;}
+.auth-panel{display:none;} .auth-panel.active{display:block;}
+.auth-logo{display:none;}
+.auth-header{display:none;}
+.auth-title{display:none;}
+.auth-sub{display:none;}
+.auth-intro{display:none;}
+.auth-close-btn{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(26,30,48,.8);backdrop-filter:blur(8px);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:16px;z-index:2;}
+.auth-card-wrap{width:100%;max-width:420px;position:relative;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:6px;font-weight:600;font-family:var(--font-data);}
+.field input{width:100%;background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-size:14px;font-family:var(--font-body);transition:.15s;}
+.field input:focus{border-color:var(--tg-blue);outline:none;box-shadow:0 0 0 3px rgba(42,171,238,.12);}
+.field-hint{font-size:11.5px;color:var(--text-faint);margin-top:5px;font-family:var(--font-data);}
+.auth-btn{width:100%;padding:14px;border-radius:12px;font-family:var(--font-data);font-weight:800;font-size:14.5px;background:linear-gradient(135deg,var(--tg-blue),var(--tg-blue-dark));color:#fff;box-shadow:0 6px 18px -4px rgba(42,171,238,.5);transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.auth-btn:active{transform:scale(.98);}
+.auth-btn:disabled{opacity:.6;}
+.auth-err{color:var(--danger);font-size:12.5px;margin-top:10px;text-align:center;font-family:var(--font-data);font-weight:600;}
+.or-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-faint);font-size:12px;font-family:var(--font-data);}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* HERO */
+.hero{padding:20px 0 6px;}
+.hero-stage{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);}
+.hero-slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+.hero-slides::-webkit-scrollbar{display:none;}
+.hero-slide{flex:0 0 100%;scroll-snap-align:start;position:relative;aspect-ratio:16/10;background:#10141f;}
+.hero-slide img{width:100%;height:100%;object-fit:cover;}
+.hero-slide .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:13px;font-family:var(--font-data);}
+.hero-caption{position:absolute;left:0;right:0;bottom:0;padding:18px 18px 16px;background:linear-gradient(to top, rgba(10,12,20,.95) 0%, transparent 100%);}
+.hero-eyebrow{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--tg-blue);text-transform:uppercase;margin-bottom:5px;display:block;}
+.hero-title{font-family:var(--font-display);font-size:20px;font-weight:700;margin:0 0 4px;line-height:1.3;}
+.hero-desc{font-size:13px;color:var(--text-dim);margin:0;line-height:1.5;}
+.hero-dots{display:flex;gap:6px;justify-content:center;padding:10px 0 2px;}
+.hero-dots span{width:6px;height:6px;border-radius:50%;background:var(--border);transition:.2s;}
+.hero-dots span.on{background:var(--tg-blue);width:18px;border-radius:4px;}
+
+/* SECTION */
+.section{padding:28px 0 8px;}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-family:var(--font-display);font-size:19px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.section-title .num{font-family:var(--font-data);font-size:11px;color:var(--text-faint);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:600;}
+
+/* PASS CARD */
+.pass-grid{display:flex;flex-direction:column;gap:16px;}
+.pass{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);position:relative;}
+.pass-media{position:relative;aspect-ratio:16/9;background:#10141f;overflow:hidden;}
+.pass-media img{width:100%;height:100%;object-fit:cover;transition:.4s;}
+.pass-media .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:13px;}
+.discount-tag{position:absolute;top:10px;left:10px;background:var(--bkash-pink);color:#fff;font-family:var(--font-data);font-weight:800;font-size:12px;padding:5px 10px;border-radius:7px;box-shadow:0 4px 10px -2px rgba(226,19,110,.55);}
+.lock-badge{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(10,12,20,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);}
+.lock-badge svg{width:14px;height:14px;stroke:var(--text-dim);fill:none;}
+.owned-seal{position:absolute;top:8px;right:8px;background:var(--success);color:#06210f;font-family:var(--font-data);font-weight:800;font-size:11px;padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:4px;transform:rotate(4deg);box-shadow:0 4px 12px -2px rgba(46,204,113,.5);}
+.pass-body{padding:16px 16px 0;}
+.pass-title{font-family:var(--font-display);font-size:16.5px;font-weight:700;margin:0 0 5px;}
+.pass-desc{font-size:13px;color:var(--text-dim);line-height:1.55;margin:0 0 14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.tear{position:relative;height:1px;background:repeating-linear-gradient(to right,var(--border) 0 7px,transparent 7px 14px);margin:0 -2px;}
+.tear::before,.tear::after{content:'';position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--bg-2);}
+.tear::before{left:-25px;} .tear::after{right:-25px;}
+.pass-foot{padding:14px 16px 16px;display:flex;align-items:center;gap:10px;}
+.price-block{flex:1;}
+.price-now{font-family:var(--font-data);font-size:19px;font-weight:800;color:var(--gold);}
+.price-was{font-family:var(--font-data);font-size:12.5px;color:var(--text-faint);text-decoration:line-through;margin-left:6px;}
+.pass-actions{display:flex;gap:8px;}
+.btn{font-family:var(--font-data);font-weight:700;font-size:13px;border-radius:10px;padding:10px 14px;display:inline-flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap;}
+.btn:active{transform:scale(.96);}
+.btn-ghost{background:var(--surface-2);color:var(--text-dim);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);}
+.btn-tg{background:linear-gradient(135deg,var(--tg-blue),var(--tg-blue-dark));color:#fff;box-shadow:0 6px 16px -4px rgba(42,171,238,.45);}
+.btn-success{background:rgba(46,204,113,.12);color:var(--success);border:1px solid rgba(46,204,113,.35);}
+.btn-pending{background:rgba(242,194,48,.1);color:var(--pending);border:1px solid rgba(242,194,48,.3);}
+.btn-progress{background:rgba(61,155,233,.1);color:var(--progress);border:1px solid rgba(61,155,233,.3);}
+.btn-rejected{background:rgba(229,72,77,.1);color:var(--danger);border:1px solid rgba(229,72,77,.3);}
+.btn-block{width:100%;justify-content:center;}
+.pass-actions-row{display:flex;gap:8px;padding:0 16px 16px;}
+.pass-actions-row .btn{flex:1;justify-content:center;}
+
+/* TELEGRAM GROUP */
+.tg-card{background:linear-gradient(165deg,rgba(42,171,238,.1),var(--surface) 45%);border:1px solid rgba(42,171,238,.3);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.tg-head{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid rgba(42,171,238,.18);}
+.tg-icon{width:38px;height:38px;border-radius:50%;background:var(--tg-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(42,171,238,.15);flex-shrink:0;}
+.tg-icon svg{width:19px;height:19px;fill:#fff;}
+.tg-head-text{flex:1;min-width:0;}
+.tg-label{font-family:var(--font-data);font-size:10.5px;color:var(--tg-blue);letter-spacing:1.2px;font-weight:700;text-transform:uppercase;}
+.tg-name{font-family:var(--font-display);font-weight:700;font-size:15.5px;margin-top:1px;}
+.tg-media{aspect-ratio:16/9;background:#10141f;overflow:hidden;}
+.tg-media img{width:100%;height:100%;object-fit:cover;}
+.tg-body{padding:16px;}
+.tg-desc{font-size:13.5px;color:var(--text-dim);line-height:1.6;margin:0 0 16px;}
+
+/* EMPTY */
+.empty{text-align:center;padding:36px 18px;color:var(--text-faint);border:1px dashed var(--border);border-radius:var(--radius);font-size:13px;font-family:var(--font-data);}
+
+/* ORDERS DRAWER */
+.scrim{position:fixed;inset:0;background:rgba(5,6,11,.6);backdrop-filter:blur(2px);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s;}
+.scrim.show{opacity:1;pointer-events:auto;}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(380px,94vw);background:var(--bg-2);border-left:1px solid var(--border);z-index:61;transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
+.drawer.show{transform:translateX(0);}
+.drawer-head{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.drawer-title{font-family:var(--font-display);font-size:17px;font-weight:700;}
+.drawer-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.order-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:.15s;}
+.order-row:hover{border-color:var(--tg-blue);}
+.order-thumb{width:52px;height:52px;border-radius:10px;background:#10141f;flex-shrink:0;overflow:hidden;}
+.order-thumb img{width:100%;height:100%;object-fit:cover;}
+.order-info{flex:1;min-width:0;}
+.order-info .name{font-size:13.5px;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.order-info .meta{font-size:11.5px;color:var(--text-faint);font-family:var(--font-data);}
+.order-info .date{font-size:10.5px;color:var(--text-faint);font-family:var(--font-data);margin-top:3px;}
+.status-chip{font-family:var(--font-data);font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:20px;flex-shrink:0;}
+.status-chip.pending{background:rgba(242,194,48,.12);color:var(--pending);}
+.status-chip.in_progress{background:rgba(61,155,233,.12);color:var(--progress);}
+.status-chip.success{background:rgba(46,204,113,.12);color:var(--success);}
+.status-chip.rejected{background:rgba(229,72,77,.12);color:var(--danger);}
+
+/* MODALS */
+.modal-scrim{position:fixed;inset:0;background:rgba(5,6,11,.75);backdrop-filter:blur(4px);z-index:80;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-scrim.show{opacity:1;pointer-events:auto;}
+.modal{background:var(--bg-2);border:1px solid var(--border);border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);padding-bottom:env(safe-area-inset-bottom);}
+.modal-scrim.show .modal{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:10px auto 0;}
+.modal-head{padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-2);z-index:1;}
+.modal-head h3{font-family:var(--font-display);font-size:17px;margin:0;}
+.modal-body{padding:20px 20px 24px;}
+.x-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:16px;border:1px solid var(--border);}
+.lightbox-img{width:100%;border-radius:14px;border:1px solid var(--border);}
+
+/* ORDER VIEW MODAL - Beautiful */
+.order-view-hero{border-radius:14px;overflow:hidden;margin-bottom:18px;border:1px solid var(--border);}
+.order-view-hero img{width:100%;aspect-ratio:16/9;object-fit:cover;}
+.order-status-banner{padding:14px 16px;border-radius:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.order-status-banner.pending{background:rgba(242,194,48,.08);border:1px solid rgba(242,194,48,.2);}
+.order-status-banner.in_progress{background:rgba(61,155,233,.08);border:1px solid rgba(61,155,233,.2);}
+.order-status-banner.success{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);}
+.order-status-banner.rejected{background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.2);}
+.osb-icon{font-size:24px;flex-shrink:0;}
+.osb-text .t{font-weight:700;font-size:14px;}
+.osb-text .s{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.dl-grid{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.dl-row{display:flex;justify-content:space-between;font-size:13px;padding:11px 14px;border-bottom:1px solid var(--border);gap:10px;align-items:center;}
+.dl-row:last-child{border-bottom:none;}
+.dl-row span:first-child{color:var(--text-faint);flex-shrink:0;font-family:var(--font-data);font-size:12px;}
+.dl-row span:last-child{text-align:right;word-break:break-all;font-weight:600;}
+.admin-msg-section{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--tg-blue);border-radius:14px;padding:16px;margin-bottom:14px;}
+.admin-msg-label{font-size:11.5px;color:var(--tg-blue);font-family:var(--font-data);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.admin-msg-text{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+.admin-link-btn{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;background:linear-gradient(135deg,var(--tg-blue),var(--tg-blue-dark));color:#fff;padding:14px;border-radius:14px;font-weight:800;font-size:15px;font-family:var(--font-data);box-shadow:0 6px 18px -4px rgba(42,171,238,.5);transition:.15s;}
+.admin-link-btn:active{transform:scale(.98);}
+.waiting-box{text-align:center;padding:24px;border:1px dashed var(--border);border-radius:14px;}
+.waiting-box .w-icon{font-size:36px;margin-bottom:10px;}
+.waiting-box .w-title{font-family:var(--font-display);font-size:15px;font-weight:700;margin-bottom:5px;}
+.waiting-box .w-text{font-size:13px;color:var(--text-faint);line-height:1.6;}
+
+/* PAYMENT */
+.pay-method-label{font-size:12px;color:var(--text-faint);font-family:var(--font-data);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;}
+.pm-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.pm-tab{padding:14px 12px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:10px;transition:.2s;cursor:pointer;}
+.pm-tab-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;font-family:var(--font-data);flex-shrink:0;transition:.2s;}
+.pm-tab[data-pm="bkash"] .pm-tab-icon{background:rgba(226,19,110,.12);color:var(--bkash-pink);}
+.pm-tab[data-pm="nagad"] .pm-tab-icon{background:rgba(247,148,29,.12);color:var(--nagad-orange);}
+.pm-tab-info{flex:1;text-align:left;}
+.pm-tab-name{font-family:var(--font-data);font-weight:800;font-size:14px;}
+.pm-tab[data-pm="bkash"] .pm-tab-name{color:var(--bkash-pink);}
+.pm-tab[data-pm="nagad"] .pm-tab-name{color:var(--nagad-orange);}
+.pm-tab-type{font-size:11px;color:var(--text-faint);margin-top:1px;}
+.pm-tab-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;}
+.pm-tab[data-pm="bkash"].active{border-color:var(--bkash-pink);background:rgba(226,19,110,.06);}
+.pm-tab[data-pm="nagad"].active{border-color:var(--nagad-orange);background:rgba(247,148,29,.06);}
+.pm-tab[data-pm="bkash"].active .pm-tab-check{background:var(--bkash-pink);border-color:var(--bkash-pink);}
+.pm-tab[data-pm="nagad"].active .pm-tab-check{background:var(--nagad-orange);border-color:var(--nagad-orange);}
+.pm-tab.active .pm-tab-check::after{content:'checkmark';font-size:0;color:#fff;font-weight:900;}
+.pm-tab.active .pm-tab-check{position:relative;}
+.pm-tab.active .pm-tab-check::after{content:'';position:absolute;width:6px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-2px);font-size:0;}
+
+.pay-card{border-radius:18px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--border);}
+.pay-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle, var(--pm-glow,rgba(226,19,110,.2)), transparent 70%);pointer-events:none;}
+.pay-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.pay-amount-label{font-size:11.5px;color:var(--text-faint);font-family:var(--font-data);font-weight:600;letter-spacing:.5px;}
+.pay-amount{font-family:var(--font-display);font-size:30px;font-weight:800;color:var(--gold);margin-top:2px;line-height:1;}
+.pay-method-badge{padding:6px 12px;border-radius:20px;font-family:var(--font-data);font-weight:800;font-size:12px;}
+#payBadgeBkash{background:rgba(226,19,110,.15);color:var(--bkash-pink);}
+#payBadgeNagad{background:rgba(247,148,29,.15);color:var(--nagad-orange);}
+.pay-number-section{background:rgba(0,0,0,.2);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.pay-number-label{font-size:11px;color:var(--text-faint);font-family:var(--font-data);margin-bottom:6px;font-weight:600;}
+.pay-number-row{display:flex;align-items:center;justify-content:space-between;}
+.pay-number{font-family:var(--font-data);font-weight:700;font-size:18px;letter-spacing:1px;}
+.copy-btn{font-family:var(--font-data);font-size:11.5px;font-weight:700;color:var(--gold);background:rgba(242,194,48,.15);padding:8px 14px;border-radius:8px;transition:.15s;}
+.copy-btn:active{transform:scale(.94);}
+.pay-steps-title{font-size:11.5px;color:var(--text-dim);font-family:var(--font-data);font-weight:700;margin-bottom:8px;letter-spacing:.3px;}
+.pay-steps{display:flex;flex-direction:column;gap:7px;}
+.pay-step{display:flex;align-items:flex-start;gap:10px;}
+.pay-step-num{width:20px;height:20px;border-radius:50%;background:var(--tg-blue);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:var(--font-data);}
+.pay-step-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;}
+.field input,.field textarea{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;transition:.15s;}
+.field input:focus,.field textarea:focus{border-color:var(--tg-blue);outline:none;box-shadow:0 0 0 3px rgba(42,171,238,.1);}
+.field-hint{font-size:11px;color:var(--text-faint);margin-top:5px;}
+.submit-btn{width:100%;padding:15px;border-radius:14px;font-family:var(--font-data);font-weight:800;font-size:15px;background:linear-gradient(135deg,var(--tg-blue),var(--tg-blue-dark));color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px -4px rgba(42,171,238,.5);transition:.15s;}
+.submit-btn:active{transform:scale(.97);}
+.submit-btn:disabled{opacity:.6;}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:30px;font-size:13px;font-family:var(--font-data);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;animation:toastIn .25s;}
+.toast.ok{border-color:rgba(46,204,113,.4);}
+.toast.err{border-color:rgba(229,72,77,.4);}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.foot{text-align:center;padding:34px 0 10px;color:var(--text-faint);font-size:11.5px;font-family:var(--font-data);}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+.spinner-dark{width:16px;height:16px;border:2px solid rgba(42,171,238,.25);border-top-color:var(--tg-blue);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001s!important;transition-duration:.001s!important;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.5 4.5 2.7 11.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.8c.2.7.4.9.9.9.4 0 .6-.2.9-.5l2.6-2.5 5 3.7c.9.5 1.6.2 1.8-.9l3.3-15.5c.4-1.4-.3-2-1.5-1.3z"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Telegram Shop</div>
+        <span class="brand-tag">DIGITAL ACCESS PASS</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="থিম পরিবর্তন" title="থিম পরিবর্তন">🌙</button>
+      <button class="icon-btn" id="openDrawerBtn" aria-label="আমার অর্ডার">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="order-dot hidden" id="orderDot">0</span>
+      </button>
+      <!-- 3-DOT MENU -->
+      <div class="dot-menu-wrap">
+        <button class="dot-menu-btn" id="dotMenuBtn" aria-label="মেনু">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="dot-menu" id="dotMenu">
+          <div id="dotMenuUser" class="dot-menu-user hidden">
+            <div class="du-name" id="dotUserName">—</div>
+            <div class="du-email" id="dotUserEmail">—</div>
+          </div>
+          <div class="dot-menu-item" id="menuHome"><span class="dm-icon">🏠</span> হোম</div>
+          <div class="dot-menu-item" id="menuProducts"><span class="dm-icon">🍌</span> Group</div>
+          <div class="dot-menu-item" id="menuTelegram"><span class="dm-icon">📣</span> টেলিগ্রাম গ্রুপ</div>
+          <div class="dot-menu-item" id="menuOrders"><span class="dm-icon">🧾</span> আমার অর্ডার</div>
+          <div class="dot-menu-divider"></div>
+          <div class="dot-menu-item hidden" id="menuLogin"><span class="dm-icon">🔐</span> লগইন / রেজিস্ট্রেশন</div>
+          <div class="dot-menu-item hidden" id="menuLogout" style="color:var(--danger);"><span class="dm-icon">🚪</span> লগআউট</div>
+          <div class="dot-menu-divider"></div>
+          <div class="dot-menu-item" id="menuTheme"><span class="dm-icon" id="themeMenuIcon">🌙</span> <span id="themeMenuLabel">ডার্ক মোড</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" id="homeView">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-stage">
+      <div class="hero-slides" id="heroSlides">
+        <div class="hero-slide"><div class="ph">লোড হচ্ছে…</div></div>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots"></div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="section" id="productsSection">
+    <div class="section-head">
+      <span class="section-title">💸 Premium Group <span class="num" id="productCount"></span></span>
+    </div>
+    <div class="pass-grid" id="productGrid">
+      <div class="empty">পণ্য লোড হচ্ছে…</div>
+    </div>
+  </section>
+
+  <!-- TELEGRAM GROUP -->
+  <section class="section" id="tgSection" style="display:none;">
+    <div class="section-head"><span class="section-title">📣 টেলিগ্রাম গ্রুপ</span></div>
+    <div class="tg-card">
+      <div class="tg-head">
+        <div class="tg-icon"><svg viewBox="0 0 24 24"><path d="M21.5 4.5 2.7 11.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.8c.2.7.4.9.9.9.4 0 .6-.2.9-.5l2.6-2.5 5 3.7c.9.5 1.6.2 1.8-.9l3.3-15.5c.4-1.4-.3-2-1.5-1.3z"/></svg></div>
+        <div class="tg-head-text">
+          <div class="tg-label">Telegram Group</div>
+          <div class="tg-name" id="tgName">লোড হচ্ছে…</div>
+        </div>
+      </div>
+      <div class="tg-media" id="tgMediaWrap"></div>
+      <div class="tg-body">
+        <p class="tg-desc" id="tgDesc"></p>
+        <div class="tear"></div>
+        <div class="pass-foot" style="padding-left:0;padding-right:0;">
+          <div class="price-block"><span class="price-now" id="tgPrice">—</span></div>
+          <div class="pass-actions" id="tgActions"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">© <span id="yr"></span> Telegram Shop — Veryfied payment system . instant group buy by bkash, Nogad - Fast and secure.</div>
+</div>
+
+<!-- PHOTO GALLERY VIEW -->
+<div class="wrap hidden" id="galleryView">
+  <section class="section" style="padding-top:20px;">
+    <div class="section-head">
+      <span class="section-title">🖼️ ফটো গ্যালারি <span class="num" id="galleryCount"></span></span>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="empty" style="grid-column:1/-1;">ছবি লোড হচ্ছে…</div>
+    </div>
+  </section>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="nav-btn active" id="navHomeBtn">
+      <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      <span>হোম</span>
+    </button>
+    <button class="nav-btn" id="navGalleryBtn">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M3 16.5l5-5 4 4 3-3 6 6"/></svg>
+      <span>ফটো গ্যালারি</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ORDERS DRAWER -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-title">🧾 অর্ডার হিস্ট্রি</span>
+    <button class="x-btn" id="closeDrawerBtn">✕</button>
+  </div>
+  <div class="drawer-list" id="orderList">
+    <div class="empty">এখনো কোনো অর্ডার নেই</div>
+  </div>
+</aside>
+
+<!-- AUTH MODAL - Full Page Beautiful -->
+<div class="auth-scrim" id="authScrim">
+  <div class="auth-card-wrap">
+    <button class="auth-close-btn" id="authCloseBtn">✕</button>
+    <div class="auth-card">
+      <!-- SITE DETAILS HERO - TOP -->
+      <div class="auth-site-hero">
+        <div class="auth-site-logo">
+          <svg viewBox="0 0 24 24"><path d="M21.5 4.5 2.7 11.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.8c.2.7.4.9.9.9.4 0 .6-.2.9-.5l2.6-2.5 5 3.7c.9.5 1.6.2 1.8-.9l3.3-15.5c.4-1.4-.3-2-1.5-1.3z"/></svg>
+        </div>
+        <div class="auth-site-name">Telegram Shop</div>
+        <div class="auth-site-tagline">Digital Access Pass</div>
+        <div class="auth-site-badges">
+          <span class="auth-badge bkash">💳 bKash</span>
+          <span class="auth-badge nagad">🟠 Nagad</span>
+          <span class="auth-badge secure">🔒 ১০০% নিরাপদ</span>
+        </div>
+        <p class="auth-site-desc">ভেরিফাইড পেমেন্ট সিস্টেম — bKash ও Nagad দিয়ে নিরাপদে প্রিমিয়াম টেলিগ্রাম গ্রুপ কিনুন, ইনস্ট্যান্ট অ্যাক্সেস পান।</p>
+      </div>
+
+      <!-- LOGIN / REGISTER FORM BOX - BOTTOM -->
+      <div class="auth-form-box">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin">🔐 লগইন</button>
+          <button class="auth-tab" id="tabRegister">✅ রেজিস্ট্রেশন</button>
+        </div>
+        <div class="auth-body">
+          <div class="auth-panel active" id="panelLogin">
+            <div class="field">
+              <label>ইমেইল অথবা ফোন নম্বর</label>
+              <input type="text" id="loginId" placeholder="Gmail বা 01XXXXXXXXX" autocomplete="username">
+            </div>
+            <div class="field">
+              <label>পাসওয়ার্ড</label>
+              <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button class="auth-btn" id="loginBtn">🔐 লগইন করুন</button>
+            <div class="auth-err hidden" id="loginErr"></div>
+            <div class="or-divider">অথবা</div>
+            <p style="text-align:center;font-size:13px;color:var(--text-faint);">অ্যাকাউন্ট নেই? <button id="goRegisterBtn" style="color:var(--tg-blue);font-weight:700;font-size:13px;background:none;border:none;cursor:pointer;">রেজিস্ট্রেশন করুন</button></p>
+          </div>
+          <div class="auth-panel" id="panelRegister">
+            <div class="field">
+              <label>আপনার নাম</label>
+              <input type="text" id="regName" placeholder="পূর্ণ নাম লিখুন" autocomplete="name">
+            </div>
+            <div class="field">
+              <label>ইমেইল (Gmail)</label>
+              <input type="email" id="regEmail" placeholder="your@gmail.com" autocomplete="email">
+              <div class="field-hint">ফোন নম্বর দিয়ে রেজিস্ট্রেশন সাপোর্টেড নয় — Gmail ব্যবহার করুন</div>
+            </div>
+            <div class="field">
+              <label>পাসওয়ার্ড</label>
+              <input type="password" id="regPass" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label>পাসওয়ার্ড নিশ্চিত করুন</label>
+              <input type="password" id="regPassConf" placeholder="পাসওয়ার্ড আবার লিখুন" autocomplete="new-password">
+            </div>
+            <button class="auth-btn" id="registerBtn">✅ অ্যাকাউন্ট তৈরি করুন</button>
+            <div class="auth-err hidden" id="regErr"></div>
+            <div class="or-divider">অথবা</div>
+            <p style="text-align:center;font-size:13px;color:var(--text-faint);">আগে থেকে আছে? <button id="goLoginBtn" style="color:var(--tg-blue);font-weight:700;font-size:13px;background:none;border:none;cursor:pointer;">লগইন করুন</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-scrim" id="payModalScrim">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h3>💳 পেমেন্ট করুন</h3>
+      <button class="x-btn" data-close-modal>✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pay-method-label">পেমেন্ট মেথড বেছে নিন</div>
+      <div class="pm-tabs">
+        <button class="pm-tab active" data-pm="bkash">
+          <div class="pm-tab-icon">bK</div>
+          <div class="pm-tab-info">
+            <div class="pm-tab-name">bKash</div>
+            <div class="pm-tab-type" id="bkashTypeLbl">পার্সোনাল</div>
+          </div>
+          <div class="pm-tab-check"></div>
+        </button>
+        <button class="pm-tab" data-pm="nagad">
+          <div class="pm-tab-icon">Ng</div>
+          <div class="pm-tab-info">
+            <div class="pm-tab-name">Nagad</div>
+            <div class="pm-tab-type" id="nagadTypeLbl">পার্সোনাল</div>
+          </div>
+          <div class="pm-tab-check"></div>
+        </button>
+      </div>
+
+      <div class="pay-card" id="payCard">
+        <div class="pay-card-header">
+          <div>
+            <div class="pay-amount-label">মোট পরিশোধ করুন</div>
+            <div class="pay-amount" id="payAmount">৫০০ ৳</div>
+          </div>
+          <div>
+            <div id="payBadgeBkash" class="pay-method-badge">bKash</div>
+            <div id="payBadgeNagad" class="pay-method-badge hidden">Nagad</div>
+          </div>
+        </div>
+        <div class="pay-number-section">
+          <div class="pay-number-label" id="payNumberLabel">bKash নম্বরে পাঠান</div>
+          <div class="pay-number-row">
+            <span class="pay-number" id="payNumber">017XXXXXXXX</span>
+            <button class="copy-btn" id="copyNumBtn">📋 কপি</button>
+          </div>
+        </div>
+        <div>
+          <div class="pay-steps-title">পেমেন্টের ধাপ</div>
+          <div class="pay-steps">
+            <div class="pay-step"><div class="pay-step-num">১</div><div class="pay-step-text" id="payStep1">bKash অ্যাপ থেকে "Send Money" তে যান এবং উপরের নম্বরে টাকা পাঠান</div></div>
+            <div class="pay-step"><div class="pay-step-num">২</div><div class="pay-step-text">পেমেন্ট সফল হলে TrxID কপি করুন</div></div>
+            <div class="pay-step"><div class="pay-step-num">৩</div><div class="pay-step-text">নিচে নম্বর ও TrxID দিয়ে সাবমিট করুন</div></div>
+          </div>
+        </div>
+      </div>
+
+      <form id="payForm">
+        <div class="field">
+          <label>পাঠানোর মোবাইল নম্বর</label>
+          <input type="tel" id="senderNumber" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
+        </div>
+        <div class="field">
+          <label>ট্রানজেকশন আইডি (TrxID)</label>
+          <input type="text" id="trxId" placeholder="যেমন: 8N7K2P9QXR" required>
+        </div>
+        <button type="submit" class="submit-btn" id="submitPayBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-9"/></svg>
+          রিকোয়েস্ট সাবমিট করুন
+        </button>
+        <p class="field-hint" style="text-align:center;margin-top:10px;">অ্যাডমিন যাচাই করে কনফার্ম করবেন</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div class="modal-scrim" id="imgModalScrim">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h3 id="imgModalTitle">ডেমো ফটো</h3><button class="x-btn" data-close-modal>✕</button></div>
+    <div class="modal-body"><img class="lightbox-img" id="imgModalSrc" src="" alt="demo"></div>
+  </div>
+</div>
+
+<!-- DETAILS MODAL -->
+<div class="modal-scrim" id="detailsModalScrim">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h3>বিস্তারিত তথ্য</h3><button class="x-btn" data-close-modal>✕</button></div>
+    <div class="modal-body" id="detailsModalBody"></div>
+  </div>
+</div>
+
+<!-- ORDER VIEW MODAL -->
+<div class="modal-scrim" id="orderViewScrim">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h3 id="orderViewTitle">অর্ডার ডিটেইলস</h3><button class="x-btn" data-close-modal>✕</button></div>
+    <div class="modal-body" id="orderViewBody"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, onSnapshot, addDoc, setDoc, query, orderBy,
+  serverTimestamp, where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDQWbwg4WJagS3B3XMBuE56k78LXkgCZtc",
+  authDomain: "telegram-shop-396a7.firebaseapp.com",
+  projectId: "telegram-shop-396a7",
+  storageBucket: "telegram-shop-396a7.firebasestorage.app",
+  messagingSenderId: "16845408227",
+  appId: "1:16845408227:web:1fb37ce8be3500849ac2d6"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let CURRENT_USER = null;
+let MY_ORDERS = {};
+let PRODUCTS = [];
+let TG_DATA = null;
+let CURRENT_PM = "bkash";
+let PENDING_PRODUCT = null;
+let PAYMENT_SETTINGS = { bkashNumber:"017XXXXXXXX", bkashType:"পার্সোনাল", nagadNumber:"018XXXXXXXX", nagadType:"পার্সোনাল" };
+let ordersUnsubscribe = null;
+
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+/* ===== THEME ===== */
+function applyTheme(theme){
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById("themeToggleBtn");
+  const menuIcon = document.getElementById("themeMenuIcon");
+  const menuLabel = document.getElementById("themeMenuLabel");
+  if(theme === "light"){
+    html.setAttribute("data-theme","light");
+    toggleBtn.textContent = "☀️";
+    menuIcon.textContent = "☀️";
+    menuLabel.textContent = "লাইট মোড";
+  } else {
+    html.removeAttribute("data-theme");
+    toggleBtn.textContent = "🌙";
+    menuIcon.textContent = "🌙";
+    menuLabel.textContent = "ডার্ক মোড";
+  }
+  localStorage.setItem("tgshop_theme", theme);
+}
+
+// সেভ করা থিম লোড করো (ডিফল্ট light)
+const savedTheme = localStorage.getItem("tgshop_theme") || "light";
+applyTheme(savedTheme);
+
+function toggleTheme(){
+  const current = document.documentElement.getAttribute("data-theme");
+  applyTheme(current === "light" ? "dark" : "light");
+}
+document.getElementById("themeToggleBtn").addEventListener("click", toggleTheme);
+document.getElementById("menuTheme").addEventListener("click", ()=>{
+  dotMenu.classList.remove("show");
+  toggleTheme();
+});
+
+/* ===== TOAST ===== */
+function toast(msg, type=""){
+  const wrap = document.getElementById("toastWrap");
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity="0"; setTimeout(()=>el.remove(),250); }, 2800);
+}
+
+/* ===== HELPERS ===== */
+function escapeHtml(str){ return String(str??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmtPrice(n){ return Number(n||0).toLocaleString("bn-BD") + " ৳"; }
+function fmtDate(ts){
+  if(!ts) return "";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("bn-BD", {day:"numeric",month:"short",year:"numeric"});
+}
+
+/* ===== MODAL ===== */
+function openModal(id){ document.getElementById(id).classList.add("show"); document.body.style.overflow="hidden"; }
+function closeModal(id){ document.getElementById(id).classList.remove("show"); document.body.style.overflow=""; }
+document.querySelectorAll("[data-close-modal]").forEach(b=>{
+  b.addEventListener("click", e=>{ const s=e.target.closest(".modal-scrim"); if(s) closeModal(s.id); });
+});
+document.querySelectorAll(".modal-scrim").forEach(s=>{
+  s.addEventListener("click", e=>{ if(e.target===s) closeModal(s.id); });
+});
+
+/* ===== DRAWER ===== */
+const drawer = document.getElementById("drawer");
+const scrim = document.getElementById("scrim");
+function openDrawer(){ drawer.classList.add("show"); scrim.classList.add("show"); document.body.style.overflow="hidden"; }
+function closeDrawer(){ drawer.classList.remove("show"); scrim.classList.remove("show"); document.body.style.overflow=""; }
+document.getElementById("openDrawerBtn").addEventListener("click", openDrawer);
+document.getElementById("closeDrawerBtn").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+
+/* ===== 3-DOT MENU ===== */
+const dotMenu = document.getElementById("dotMenu");
+document.getElementById("dotMenuBtn").addEventListener("click", e=>{
+  e.stopPropagation();
+  dotMenu.classList.toggle("show");
+});
+document.addEventListener("click", ()=> dotMenu.classList.remove("show"));
+dotMenu.addEventListener("click", e=> e.stopPropagation());
+
+document.getElementById("menuHome").addEventListener("click", ()=>{ dotMenu.classList.remove("show"); switchView("home"); });
+document.getElementById("menuProducts").addEventListener("click", ()=>{ dotMenu.classList.remove("show"); switchView("home"); setTimeout(()=>document.getElementById("productsSection").scrollIntoView({behavior:"smooth"}),50); });
+document.getElementById("menuTelegram").addEventListener("click", ()=>{ dotMenu.classList.remove("show"); switchView("home"); setTimeout(()=>document.getElementById("tgSection").scrollIntoView({behavior:"smooth"}),50); });
+document.getElementById("menuOrders").addEventListener("click", ()=>{ dotMenu.classList.remove("show"); openDrawer(); });
+document.getElementById("menuLogin").addEventListener("click", ()=>{ dotMenu.classList.remove("show"); openAuth("login"); });
+document.getElementById("menuLogout").addEventListener("click", ()=>{
+  dotMenu.classList.remove("show");
+  signOut(auth).then(()=> toast("লগআউট হয়েছে","ok"));
+});
+
+/* ===== VIEW SWITCH (HOME / GALLERY) ===== */
+function switchView(view){
+  const home = document.getElementById("homeView");
+  const gallery = document.getElementById("galleryView");
+  const navHome = document.getElementById("navHomeBtn");
+  const navGallery = document.getElementById("navGalleryBtn");
+  if(view==="gallery"){
+    home.classList.add("hidden"); gallery.classList.remove("hidden");
+    navHome.classList.remove("active"); navGallery.classList.add("active");
+  } else {
+    gallery.classList.add("hidden"); home.classList.remove("hidden");
+    navGallery.classList.remove("active"); navHome.classList.add("active");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+}
+document.getElementById("navHomeBtn").addEventListener("click", ()=> switchView("home"));
+document.getElementById("navGalleryBtn").addEventListener("click", ()=> switchView("gallery"));
+
+/* ===== PHOTO GALLERY ===== */
+onSnapshot(query(collection(db,"gallery"), orderBy("createdAt","desc")), snap=>{
+  const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+  const grid = document.getElementById("galleryGrid");
+  document.getElementById("galleryCount").textContent = items.length||"";
+  if(!items.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">এখনো কোনো ছবি যুক্ত করা হয়নি</div>`; return; }
+  grid.innerHTML = items.map(it=>`
+    <div class="gallery-item" data-img="${escapeHtml(it.photoUrl)}" data-title="${escapeHtml(it.title||'ফটো')}">
+      <img src="${it.photoUrl}" alt="${escapeHtml(it.title||'')}" loading="lazy">
+      ${it.title?`<div class="gallery-cap">${escapeHtml(it.title)}</div>`:""}
+    </div>`).join("");
+  grid.querySelectorAll("[data-img]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      document.getElementById("imgModalTitle").textContent = el.dataset.title;
+      document.getElementById("imgModalSrc").src = el.dataset.img;
+      openModal("imgModalScrim");
+    });
+  });
+}, err=>{ console.error("Gallery error:", err); });
+
+
+onAuthStateChanged(auth, user=>{
+  CURRENT_USER = user;
+  updateAuthUI();
+  if(user){
+    subscribeOrders(user.uid);
+  } else {
+    if(ordersUnsubscribe){ ordersUnsubscribe(); ordersUnsubscribe=null; }
+    MY_ORDERS = {};
+    renderProducts();
+    renderTgActions();
+    renderOrderList([]);
+    const dot = document.getElementById("orderDot");
+    dot.classList.add("hidden");
+  }
+});
+
+function updateAuthUI(){
+  const u = CURRENT_USER;
+  const menuLogin = document.getElementById("menuLogin");
+  const menuLogout = document.getElementById("menuLogout");
+  const dotMenuUser = document.getElementById("dotMenuUser");
+  if(u){
+    menuLogin.classList.add("hidden");
+    menuLogout.classList.remove("hidden");
+    dotMenuUser.classList.remove("hidden");
+    document.getElementById("dotUserName").textContent = u.displayName || "ইউজার";
+    document.getElementById("dotUserEmail").textContent = u.email || "";
+  } else {
+    menuLogin.classList.remove("hidden");
+    menuLogout.classList.add("hidden");
+    dotMenuUser.classList.add("hidden");
+  }
+}
+
+/* ===== AUTH MODAL ===== */
+function openAuth(tab="login"){
+  document.getElementById("authScrim").classList.add("show");
+  document.body.style.overflow="hidden";
+  switchAuthTab(tab);
+  document.getElementById("loginErr").classList.add("hidden");
+  document.getElementById("regErr").classList.add("hidden");
+}
+function closeAuth(){
+  document.getElementById("authScrim").classList.remove("show");
+  document.body.style.overflow="";
+}
+document.getElementById("authCloseBtn").addEventListener("click", closeAuth);
+document.getElementById("authScrim").addEventListener("click", e=>{ if(e.target===document.getElementById("authScrim")) closeAuth(); });
+
+function switchAuthTab(tab){
+  document.getElementById("panelLogin").classList.toggle("active", tab==="login");
+  document.getElementById("panelRegister").classList.toggle("active", tab==="register");
+  document.getElementById("tabLogin").classList.toggle("active", tab==="login");
+  document.getElementById("tabRegister").classList.toggle("active", tab==="register");
+}
+document.getElementById("tabLogin").addEventListener("click", ()=> switchAuthTab("login"));
+document.getElementById("tabRegister").addEventListener("click", ()=> switchAuthTab("register"));
+document.getElementById("goRegisterBtn").addEventListener("click", ()=> switchAuthTab("register"));
+document.getElementById("goLoginBtn").addEventListener("click", ()=> switchAuthTab("login"));
+
+/* LOGIN */
+document.getElementById("loginBtn").addEventListener("click", async ()=>{
+  const btn = document.getElementById("loginBtn");
+  const errEl = document.getElementById("loginErr");
+  errEl.classList.add("hidden");
+  let id = document.getElementById("loginId").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if(!id || !pass){ errEl.textContent="সব তথ্য পূরণ করুন"; errEl.classList.remove("hidden"); return; }
+  // If phone number, convert to email format
+  let email = id;
+  if(/^01[0-9]{9}$/.test(id)) email = id + "@tshop.user";
+  btn.disabled=true; btn.innerHTML=`<span class="spinner"></span> লগইন হচ্ছে…`;
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+    toast("স্বাগতম! লগইন সফল ✓","ok");
+    closeAuth();
+    if(PENDING_PRODUCT) setTimeout(()=> handleBuyClick(PENDING_PRODUCT._id), 300);
+  }catch(err){
+    const msg = err.code==="auth/invalid-credential"||err.code==="auth/wrong-password"||err.code==="auth/user-not-found"
+      ? "ইমেইল বা পাসওয়ার্ড ভুল" : "সমস্যা হয়েছে: "+err.message;
+    errEl.textContent=msg; errEl.classList.remove("hidden");
+  }finally{ btn.disabled=false; btn.innerHTML="🔐 লগইন করুন"; }
+});
+
+/* REGISTER */
+document.getElementById("registerBtn").addEventListener("click", async ()=>{
+  const btn = document.getElementById("registerBtn");
+  const errEl = document.getElementById("regErr");
+  errEl.classList.add("hidden");
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const pass = document.getElementById("regPass").value;
+  const conf = document.getElementById("regPassConf").value;
+  if(!name||!email||!pass||!conf){ errEl.textContent="সব তথ্য পূরণ করুন"; errEl.classList.remove("hidden"); return; }
+  if(pass!==conf){ errEl.textContent="পাসওয়ার্ড মিলছে না"; errEl.classList.remove("hidden"); return; }
+  if(pass.length<6){ errEl.textContent="পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে"; errEl.classList.remove("hidden"); return; }
+  btn.disabled=true; btn.innerHTML=`<span class="spinner"></span> তৈরি হচ্ছে…`;
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    try{
+      await setDoc(doc(db,"users",cred.user.uid), {
+        name, email, createdAt: serverTimestamp()
+      }, { merge:true });
+    }catch(uerr){ console.error("user doc save error:", uerr); }
+    toast("অ্যাকাউন্ট তৈরি সফল! স্বাগতম 🎉","ok");
+    closeAuth();
+    if(PENDING_PRODUCT) setTimeout(()=> handleBuyClick(PENDING_PRODUCT._id), 300);
+  }catch(err){
+    const msg = err.code==="auth/email-already-in-use"
+      ? "এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে"
+      : err.code==="auth/invalid-email" ? "ইমেইল ঠিকানা সঠিক নয়"
+      : "সমস্যা হয়েছে: "+err.message;
+    errEl.textContent=msg; errEl.classList.remove("hidden");
+  }finally{ btn.disabled=false; btn.innerHTML="✅ অ্যাকাউন্ট তৈরি করুন"; }
+});
+
+/* ===== PAYMENT SETTINGS ===== */
+onSnapshot(doc(db,"settings","payment"), snap=>{
+  if(snap.exists()){
+    PAYMENT_SETTINGS = { ...PAYMENT_SETTINGS, ...snap.data() };
+    document.getElementById("bkashTypeLbl").textContent = PAYMENT_SETTINGS.bkashType || "পার্সোনাল";
+    document.getElementById("nagadTypeLbl").textContent = PAYMENT_SETTINGS.nagadType || "পার্সোনাল";
+    renderPayCard();
+  }
+});
+
+/* ===== HERO ===== */
+onSnapshot(doc(db,"config","homeBanner"), snap=>{
+  const slidesEl = document.getElementById("heroSlides");
+  const dotsEl = document.getElementById("heroDots");
+  const data = snap.exists() ? snap.data() : null;
+  const slides = (data && data.slides && data.slides.length) ? data.slides : null;
+  if(!slides){
+    slidesEl.innerHTML=`<div class="hero-slide"><div class="ph">অ্যাডমিন প্যানেল থেকে ব্যানার যুক্ত করুন</div></div>`;
+    dotsEl.innerHTML=""; return;
+  }
+  slidesEl.innerHTML = slides.map(s=>`
+    <div class="hero-slide">
+      <img src="${s.photoUrl}" alt="${escapeHtml(s.title||'')}" loading="lazy">
+      <div class="hero-caption">
+        <span class="hero-eyebrow">Premium plus</span>
+        <h1 class="hero-title">${escapeHtml(s.title||'')}</h1>
+        <p class="hero-desc">${escapeHtml(s.description||'')}</p>
+      </div>
+    </div>`).join("");
+  dotsEl.innerHTML = slides.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("");
+  let dots = dotsEl.querySelectorAll("span");
+  slidesEl.addEventListener("scroll", ()=>{
+    const idx = Math.round(slidesEl.scrollLeft/slidesEl.clientWidth);
+    dots.forEach((d,i)=>d.classList.toggle("on",i===idx));
+  });
+  let idx2=0;
+  setInterval(()=>{
+    if(!slides.length) return;
+    idx2=(idx2+1)%slides.length;
+    slidesEl.scrollTo({left:idx2*slidesEl.clientWidth,behavior:"smooth"});
+  },4500);
+});
+
+/* ===== PRODUCTS ===== */
+onSnapshot(query(collection(db,"products"),orderBy("createdAt","desc")), snap=>{
+  PRODUCTS = snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById("productCount").textContent = PRODUCTS.length||"";
+  renderProducts();
+});
+
+function renderProducts(){
+  const grid = document.getElementById("productGrid");
+  if(!PRODUCTS.length){ grid.innerHTML=`<div class="empty">🍆 এখনো কোনো পণ্য নেই</div>`; return; }
+  grid.innerHTML = PRODUCTS.map(p=>{
+    const order = MY_ORDERS[p.id];
+    const discountPct = (p.discountPrice && p.price>p.discountPrice) ? Math.round(100-(p.discountPrice/p.price*100)) : null;
+    const displayPrice = p.discountPrice && p.discountPrice<p.price ? p.discountPrice : p.price;
+    return `
+    <div class="pass">
+      <div class="pass-media">
+        ${p.photoUrl?`<img src="${p.photoUrl}" loading="lazy" alt="${escapeHtml(p.title)}">`:`<div class="ph">ছবি নেই</div>`}
+        ${discountPct?`<div class="discount-tag">-${discountPct}%</div>`:""}
+        ${order&&order.status==="success"
+          ?`<div class="owned-seal">✓ সংগৃহীত</div>`
+          :`<div class="lock-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>`}
+      </div>
+      <div class="pass-body">
+        <h3 class="pass-title">${escapeHtml(p.title)}</h3>
+        <p class="pass-desc">${escapeHtml(p.description||"")}</p>
+      </div>
+      <div class="tear"></div>
+      <div class="pass-foot">
+        <div class="price-block">
+          <span class="price-now">${fmtPrice(displayPrice)}</span>
+          ${discountPct?`<span class="price-was">${fmtPrice(p.price)}</span>`:""}
+        </div>
+        <div class="pass-actions">${buyButtonHtml(p,order)}</div>
+      </div>
+      <div class="pass-actions-row">
+        <button class="btn btn-ghost" data-demo="${p.id}">🖼️ ডেমো</button>
+        <button class="btn btn-ghost" data-details="${p.id}">ℹ️ Details</button>
+      </div>
+    </div>`;
+  }).join("");
+  grid.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>handleBuyClick(b.dataset.buy)));
+  grid.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openOrderView(b.dataset.view)));
+  grid.querySelectorAll("[data-demo]").forEach(b=>b.addEventListener("click",()=>openDemo(b.dataset.demo)));
+  grid.querySelectorAll("[data-details]").forEach(b=>b.addEventListener("click",()=>openDetails(b.dataset.details)));
+}
+
+function buyButtonHtml(p, order){
+  if(order && order.status==="success") return `<button class="btn btn-success" data-view="${p.id}">✓ View Order</button>`;
+  if(order && order.status==="in_progress") return `<button class="btn btn-progress" data-view="${p.id}">⏳ Processing</button>`;
+  if(order && order.status==="pending") return `<button class="btn btn-pending" data-view="${p.id}">🕓 Pending</button>`;
+  if(order && order.status==="rejected") return `<button class="btn btn-rejected" data-view="${p.id}">❌ বাতিল হয়েছে</button>`;
+  return `<button class="btn btn-tg" data-buy="${p.id}">🛒 BUY GROUP</button>`;
+}
+
+/* ===== ORDERS SUBSCRIPTION ===== */
+function subscribeOrders(uid){
+  if(ordersUnsubscribe){ ordersUnsubscribe(); }
+  // where + orderBy একসাথে composite index লাগে তাই শুধু where দিয়ে query, client-side sort
+  ordersUnsubscribe = onSnapshot(
+    query(collection(db,"orders"), where("userId","==",uid)),
+    snap=>{
+      let orders = snap.docs.map(d=>({id:d.id,...d.data()}));
+      // Client-side sort by createdAt desc
+      orders.sort((a,b)=>{
+        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return tb - ta;
+      });
+      MY_ORDERS = {};
+      orders.forEach(o=>{ if(!MY_ORDERS[o.productId]) MY_ORDERS[o.productId]=o; });
+      renderOrderList(orders);
+      renderProducts();
+      renderTgActions();
+      const dot = document.getElementById("orderDot");
+      const active = orders.filter(o=>o.status!=="success" && o.status!=="rejected").length;
+      if(active>0){ dot.classList.remove("hidden"); dot.textContent=active; }
+      else dot.classList.add("hidden");
+    },
+    err=>{ console.error("Orders error:",err); toast("অর্ডার লোড ব্যর্থ: "+err.message,"err"); }
+  );
+}
+
+/* ===== ORDER LIST ===== */
+const STATUS_LABEL = { pending:"Pending", in_progress:"processing", success:"সফল", rejected:"বাতিল" };
+const STATUS_ICON = { pending:"🕓", in_progress:"⏳", success:"✅", rejected:"❌" };
+
+function renderOrderList(orders){
+  const list = document.getElementById("orderList");
+  if(!orders.length){
+    list.innerHTML=`<div class="empty">এখনো কোনো অর্ডার নেই</div>`; return;
+  }
+  list.innerHTML = orders.map(o=>`
+    <div class="order-row" data-view="${o.productId}">
+      <div class="order-thumb">${thumbFor(o.productId)}</div>
+      <div class="order-info">
+        <div class="name">${escapeHtml(o.productTitle||"")}</div>
+        <div class="meta">${fmtPrice(o.price)} · ${o.paymentMethod==="bkash"?"bKash":"Nagad"}</div>
+        <div class="date">${fmtDate(o.createdAt)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <span class="status-chip ${o.status}">${STATUS_ICON[o.status]||""} ${STATUS_LABEL[o.status]||o.status}</span>
+        ${o.status==="success"?`<span style="font-size:10px;color:var(--success);font-family:var(--font-data);font-weight:700;">ট্যাপ করুন</span>`:""}
+      </div>
+    </div>`).join("");
+  list.querySelectorAll("[data-view]").forEach(r=>r.addEventListener("click",()=>{ closeDrawer(); openOrderView(r.dataset.view); }));
+}
+
+function thumbFor(productId){
+  const p = productId==="telegram_group" ? TG_DATA : PRODUCTS.find(x=>x.id===productId);
+  return p&&p.photoUrl ? `<img src="${p.photoUrl}">` : `<div style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>`;
+}
+
+/* ===== ORDER VIEW ===== */
+function openOrderView(productId){
+  const order = MY_ORDERS[productId];
+  if(!order){ toast("অর্ডার পাওয়া যায়নি","err"); return; }
+  const p = productId==="telegram_group" ? TG_DATA : PRODUCTS.find(x=>x.id===productId);
+  document.getElementById("orderViewTitle").textContent = order.productTitle||"অর্ডার ডিটেইলস";
+
+  const bannerConfig = {
+    pending: { icon:"🕓", title:"পেমেন্ট যাচাই হচ্ছে", sub:"অ্যাডমিন শীঘ্রই যাচাই করবেন" },
+    in_progress: { icon:"⚙️", title:"প্রসেস করা হচ্ছে", sub:"আপনার অ্যাক্সেস প্রস্তুত হচ্ছে" },
+    success: { icon:"🎉", title:"অর্ডার সফল!", sub:"আপনার অ্যাক্সেস দেওয়া হয়েছে" },
+    rejected: { icon:"❌", title:"অর্ডার বাতিল হয়েছে", sub:"নিচে কারণ দেখুন অথবা আবার অর্ডার করুন" }
+  };
+  const bc = bannerConfig[order.status]||bannerConfig.pending;
+
+  document.getElementById("orderViewBody").innerHTML = `
+    ${p&&p.photoUrl?`<div class="order-view-hero"><img src="${p.photoUrl}" alt="${escapeHtml(order.productTitle)}"></div>`:""}
+    <div class="order-status-banner ${order.status}">
+      <div class="osb-icon">${bc.icon}</div>
+      <div class="osb-text">
+        <div class="t">${bc.title}</div>
+        <div class="s">${bc.sub}</div>
+      </div>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-row"><span>পণ্য</span><span>${escapeHtml(order.productTitle||"")}</span></div>
+      <div class="dl-row"><span>মূল্য</span><span style="color:var(--gold);font-weight:800;">${fmtPrice(order.price)}</span></div>
+      <div class="dl-row"><span>পেমেন্ট</span><span>${order.paymentMethod==="bkash"?"💗 bKash":"🟠 Nagad"}</span></div>
+      <div class="dl-row"><span>TrxID</span><span style="font-family:var(--font-data);">${escapeHtml(order.trxId||"—")}</span></div>
+      <div class="dl-row"><span>তারিখ</span><span>${fmtDate(order.createdAt)}</span></div>
+      <div class="dl-row"><span>স্ট্যাটাস</span><span class="status-chip ${order.status}">${STATUS_ICON[order.status]} ${STATUS_LABEL[order.status]}</span></div>
+    </div>
+    ${order.status==="success" ? `
+      <div class="admin-msg-section">
+        <div class="admin-msg-label">📩 অ্যাডমিনের বার্তা</div>
+        <div class="admin-msg-text">${escapeHtml(order.adminMessage)||"কোনো বার্তা পাঠানো হয়নি"}</div>
+      </div>
+      ${order.adminLink?`<a class="admin-link-btn" href="${escapeHtml(order.adminLink)}" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M21.5 4.5 2.7 11.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.8c.2.7.4.9.9.9.4 0 .6-.2.9-.5l2.6-2.5 5 3.7c.9.5 1.6.2 1.8-.9l3.3-15.5c.4-1.4-.3-2-1.5-1.3z"/></svg>
+        গ্রুপে যোগ দিন
+      </a>`:""}
+    ` : order.status==="rejected" ? `
+      <div class="admin-msg-section" style="border-color:rgba(229,72,77,.3);">
+        <div class="admin-msg-label" style="color:var(--danger);">❌ বাতিলের কারণ</div>
+        <div class="admin-msg-text">${escapeHtml(order.adminMessage)||"কোনো কারণ উল্লেখ করা হয়নি, বিস্তারিত জানতে অ্যাডমিনের সাথে যোগাযোগ করুন"}</div>
+      </div>
+      <button class="btn btn-tg btn-block" style="margin-top:14px;" data-buy="${order.productId}">🛒 আবার অর্ডার করুন</button>
+    ` : `
+      <div class="waiting-box">
+        <div class="w-icon">${order.status==="in_progress"?"⚙️":"⏳"}</div>
+        <div class="w-title">${order.status==="in_progress"?"প্রসেস হচ্ছে…":"অপেক্ষা করুন"}</div>
+        <div class="w-text">যাচাই সম্পন্ন হলে এখানে অ্যাডমিনের বার্তা ও গ্রুপ লিংক দেখা যাবে</div>
+      </div>
+    `}
+  `;
+  const retryBtn = document.getElementById("orderViewBody").querySelector("[data-buy]");
+  if(retryBtn) retryBtn.addEventListener("click", ()=>{ closeModal("orderViewScrim"); handleBuyClick(retryBtn.dataset.buy); });
+  openModal("orderViewScrim");
+}
+
+/* ===== BUY FLOW ===== */
+function handleBuyClick(id){
+  if(!CURRENT_USER){
+    // Save pending product so after login we open payment
+    const isTg = id==="telegram_group";
+    const p = isTg ? TG_DATA : PRODUCTS.find(x=>x.id===id);
+    if(p) PENDING_PRODUCT = {...p, _id:id};
+    openAuth("login");
+    return;
+  }
+  const isTg = id==="telegram_group";
+  const p = isTg ? TG_DATA : PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const price = p.discountPrice && p.discountPrice<p.price ? p.discountPrice : p.price;
+  PENDING_PRODUCT = { id, _id:id, title:p.title, price, type: isTg?"telegram":"product" };
+  document.getElementById("payAmount").textContent = fmtPrice(price);
+  document.getElementById("payForm").reset();
+  renderPayCard();
+  openModal("payModalScrim");
+}
+
+function renderPayCard(){
+  const card = document.getElementById("payCard");
+  const badgeBk = document.getElementById("payBadgeBkash");
+  const badgeNg = document.getElementById("payBadgeNagad");
+  const step1 = document.getElementById("payStep1");
+  const numLabel = document.getElementById("payNumberLabel");
+  if(CURRENT_PM==="bkash"){
+    card.style.setProperty("--pm-glow","rgba(226,19,110,.2)");
+    document.getElementById("payNumber").textContent = PAYMENT_SETTINGS.bkashNumber;
+    badgeBk.classList.remove("hidden"); badgeNg.classList.add("hidden");
+    numLabel.textContent = "bKash নম্বরে Send Money করুন";
+    step1.textContent = 'bKash অ্যাপ থেকে "Send Money" তে যান এবং উপরের নম্বরে টাকা পাঠান';
+  } else {
+    card.style.setProperty("--pm-glow","rgba(247,148,29,.2)");
+    document.getElementById("payNumber").textContent = PAYMENT_SETTINGS.nagadNumber;
+    badgeBk.classList.add("hidden"); badgeNg.classList.remove("hidden");
+    numLabel.textContent = "Nagad নম্বরে Send Money করুন";
+    step1.textContent = 'Nagad অ্যাপ থেকে "Send Money" তে যান এবং উপরের নম্বরে টাকা পাঠান';
+  }
+}
+
+document.querySelectorAll(".pm-tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll(".pm-tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    CURRENT_PM = tab.dataset.pm;
+    renderPayCard();
+  });
+});
+
+document.getElementById("copyNumBtn").addEventListener("click",()=>{
+  const num = document.getElementById("payNumber").textContent;
+  navigator.clipboard?.writeText(num).then(()=>toast("নাম্বার কপি হয়েছে ✓","ok")).catch(()=>toast("কপি হয়নি","err"));
+});
+
+document.getElementById("payForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  if(!PENDING_PRODUCT||!CURRENT_USER) return;
+  const btn = document.getElementById("submitPayBtn");
+  const senderNumber = document.getElementById("senderNumber").value.trim();
+  const trxId = document.getElementById("trxId").value.trim();
+  if(!/^01[0-9]{9}$/.test(senderNumber)){ toast("সঠিক ১১ ডিজিটের নাম্বার দিন","err"); return; }
+  if(trxId.length<4){ toast("সঠিক TrxID দিন","err"); return; }
+  btn.disabled=true; btn.innerHTML=`<span class="spinner"></span> সাবমিট হচ্ছে…`;
+  try{
+    await addDoc(collection(db,"orders"),{
+      userId: CURRENT_USER.uid,
+      userEmail: CURRENT_USER.email||"",
+      userName: CURRENT_USER.displayName||"",
+      productId: PENDING_PRODUCT.id,
+      productTitle: PENDING_PRODUCT.title,
+      productType: PENDING_PRODUCT.type,
+      price: PENDING_PRODUCT.price,
+      paymentMethod: CURRENT_PM,
+      senderNumber, trxId,
+      status:"pending", adminMessage:"", adminLink:"",
+      createdAt:serverTimestamp(), updatedAt:serverTimestamp()
+    });
+    toast("রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে ✓","ok");
+    PENDING_PRODUCT = null;
+    closeModal("payModalScrim");
+  }catch(err){
+    console.error(err); toast("সমস্যা হয়েছে, আবার চেষ্টা করুন","err");
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-9"/></svg> রিকোয়েস্ট সাবমিট করুন`;
+  }
+});
+
+/* ===== TELEGRAM GROUP ===== */
+onSnapshot(doc(db,"config","telegramGroup"), snap=>{
+  const sec = document.getElementById("tgSection");
+  if(!snap.exists()){ sec.style.display="none"; return; }
+  TG_DATA = { id:"telegram_group",...snap.data() };
+  sec.style.display="block";
+  document.getElementById("tgName").textContent = TG_DATA.title||"টেলিগ্রাম গ্রুপ";
+  document.getElementById("tgDesc").textContent = TG_DATA.description||"";
+  document.getElementById("tgMediaWrap").innerHTML = TG_DATA.photoUrl
+    ? `<img src="${TG_DATA.photoUrl}" alt="telegram group">`
+    : `<div style="height:180px;display:flex;align-items:center;justify-content:center;color:var(--text-faint);">ছবি নেই</div>`;
+  const price = TG_DATA.discountPrice&&TG_DATA.discountPrice<TG_DATA.price ? TG_DATA.discountPrice : TG_DATA.price;
+  document.getElementById("tgPrice").textContent = price ? fmtPrice(price) : "ফ্রি";
+  renderTgActions();
+});
+
+function renderTgActions(){
+  if(!TG_DATA) return;
+  const order = MY_ORDERS["telegram_group"];
+  const wrap = document.getElementById("tgActions");
+  wrap.innerHTML = buyButtonHtml(TG_DATA,order) + `<button class="btn btn-ghost" data-demo="telegram_group">ডেমো</button>`;
+  wrap.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>handleBuyClick(b.dataset.buy)));
+  wrap.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>openOrderView(b.dataset.view)));
+  wrap.querySelectorAll("[data-demo]").forEach(b=>b.addEventListener("click",()=>openDemo(b.dataset.demo)));
+}
+
+/* ===== DEMO & DETAILS ===== */
+function openDemo(id){
+  const p = id==="telegram_group" ? TG_DATA : PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const src = p.demoPhotoUrl||p.photoUrl;
+  if(!src){ toast("কোনো ডেমো ফটো নেই"); return; }
+  document.getElementById("imgModalTitle").textContent = (p.title||"ডেমো")+" — ডেমো";
+  document.getElementById("imgModalSrc").src = src;
+  openModal("imgModalScrim");
+}
+function openDetails(id){
+  const p = id==="telegram_group" ? TG_DATA : PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById("detailsModalBody").innerHTML = `
+    ${p.photoUrl?`<img class="lightbox-img" src="${p.photoUrl}" style="margin-bottom:14px;">`:""}
+    <h3 style="font-family:var(--font-display);margin:0 0 8px;">${escapeHtml(p.title||"")}</h3>
+    <p style="color:var(--text-dim);line-height:1.7;font-size:14px;white-space:pre-wrap;">${escapeHtml(p.description||"কোনো বিবরণ নেই")}</p>
+    ${p.price?`<div class="dl-row" style="border:none;padding-top:14px;"><span style="color:var(--text-faint);">মূল্য</span><span style="color:var(--gold);font-weight:800;">${fmtPrice(p.discountPrice&&p.discountPrice<p.price?p.discountPrice:p.price)}</span></div>`:""}
+  `;
+  openModal("detailsModalScrim");
+}
+</script>
+</body>
+</html>
